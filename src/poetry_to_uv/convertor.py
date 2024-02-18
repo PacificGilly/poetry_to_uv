@@ -2,17 +2,17 @@ import sys
 from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
-from typing import Optional, Any, cast
+from typing import Any, Optional, cast
 
 import tomlkit
 from packaging.utils import NormalizedName, canonicalize_name
 from tomlkit import TOMLDocument
+from tomlkit.exceptions import NonExistentKey
 from tomlkit.items import Array
 
 from poetry_to_uv.poetry import PoetryDependencyExporter
 from poetry_to_uv.typing import PoetryResolvedDependencies, UVResolvedDependencies
 from poetry_to_uv.validation import PoetryPyProject
-
 
 log = getLogger(__name__)
 
@@ -121,7 +121,7 @@ class PoetryToUv:
         :return:
         """
         pyproject_resolved_dependencies_group: dict[str, UVResolvedDependencies] = {}
-        for dependency_group, dependencies in pyproject.tool.poetry.extras.items():
+        for dependency_group, dependencies in pyproject.tool.poetry.get_extras.items():
             pyproject_resolved_dependencies_group[dependency_group] = {}
             for dependency in dependencies:
                 resolved_dep = self.resolve_dependency(dependency, poetry_resolved_dependencies)
@@ -149,9 +149,19 @@ class PoetryToUv:
 
         # Remove the Poetry formatted dependencies.
         pyproject_config.get("project").remove("source")
-        pyproject_config.get("project").remove("group")
-        pyproject_config.get("project").remove("extras")
-        pyproject_config.get("tool").remove("poetry")
+        try:
+            pyproject_config.get("project").remove("group")
+        except NonExistentKey:
+            pass
+        try:
+            pyproject_config.get("project").remove("extras")
+        except NonExistentKey:
+            pass
+        tool = pyproject_config.get("tool")
+        try:
+            tool.remove("poetry")
+        except AttributeError:
+            tool.pop("poetry")
 
         # Add the `dependencies` to the `[project]`.
         pyproject_config = self._write_main_dependencies(
@@ -222,8 +232,8 @@ class PoetryToUv:
         # Get all the projects resolved dependencies, including any transient ones (which we don't
         # care as UV will later re-resolve for us).
         poetry_resolved_dependencies = self.get_poetry_resolved_dependencies(
-            extras=list(pyproject.tool.poetry.extras.keys()),
-            groups=list(pyproject.tool.poetry.group.keys()),
+            extras=list(pyproject.tool.poetry.get_extras.keys()),
+            groups=list(pyproject.tool.poetry.get_groups.keys()),
         )
 
         # Now resolve the dependencies everywhere.

@@ -8,8 +8,8 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 class PoetryConfig:
     description: str
     dependencies: dict[str, Any]
-    group: dict[str, Any]
-    extras: dict[str, Any]
+    group: dict[str, Any] | None = None
+    extras: dict[str, Any] | None = None
 
     @property
     def get_dependencies(self) -> dict[NormalizedName, str]:
@@ -38,6 +38,18 @@ class PoetryConfig:
                 raise RuntimeError(f"Unknown dependency version: `{version}`")
 
         return dependencies
+
+    @property
+    def get_groups(self) -> dict[NormalizedName, str]:
+        if not isinstance(self.group, dict):
+            return {}
+        return self.group
+
+    @property
+    def get_extras(self) -> dict[NormalizedName, str]:
+        if not isinstance(self.extras, dict):
+            return {}
+        return self.extras
 
 
 @pydantic_dataclass
