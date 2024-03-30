@@ -12,10 +12,14 @@ versions installed as did Poetry. Although you can manually export the resolved 
 Poetry, these will include ever single transient dependency, so it's really difficult to separate 
 all of these out to ensure you only keep the existing deps.
 
+# Installation
+```
+uv pip install poetry_to_uv
+```
 
 # Usage
 ```
-usage: python -m poetry_to_uv [-h] [--output-file OUTPUT_FILE] pyproject_path
+usage: poetry_to_uv [-h] [--output-file OUTPUT_FILE] pyproject_path
 
 Helps convert a Poetry formatted pyproject.toml file to a UV formatted pyproject.toml file (also compatible with pip and pip-compile). It will unpin all of your dependencies for you to ensure UV uses the exact same requirements, for your specified dependencies.
 
@@ -29,7 +33,6 @@ options:
 
 Only meant as a helper to reduce some horrible BAU, especially if you've left all your dependencies unpinned!
 ```
-
 
 # Known Issues
 1) The new `[project]` settings are placed at the bottom of the file. So if you hate it, just as much as I do, then you'll have to manually move it to the top!
