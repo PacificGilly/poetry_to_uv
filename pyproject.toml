@@ -17,6 +17,9 @@ testing = [
     "mypy",
 ]
 
+[project.scripts]
+poetry_to_uv = "poetry_to_uv.__main__:cli_entrypoint"
+
 
 [tool.ruff]
 src = ["src"]

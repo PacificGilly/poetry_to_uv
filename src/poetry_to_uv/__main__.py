@@ -3,7 +3,8 @@ from pathlib import Path
 
 from poetry_to_uv.convertor import PoetryToUv
 
-if __name__ == "__main__":
+
+def cli_entrypoint():
     parser = argparse.ArgumentParser(
         prog="python -m poetry_to_uv",
         description=(
@@ -26,9 +27,13 @@ if __name__ == "__main__":
         type=Path,
         default=None,
         help="The output file to write the UV formatted pyproject.toml file. If "
-        "not specified then it will print the results to the terminal.",
+             "not specified then it will print the results to the terminal.",
     )
     args = parser.parse_args()
 
     poetry_to_uv = PoetryToUv(pyproject_path=args.pyproject_path, output_file=args.output_file)
     poetry_to_uv()
+
+
+if __name__ == "__main__":
+    cli_entrypoint()
