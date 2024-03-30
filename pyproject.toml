@@ -1,6 +1,6 @@
 [project]
 name = "poetry-to-uv"
-version = "0.0.1"
+version = "0.0.2"
 description = "Help make the migration from using a Poetry pyproject.toml file to a UV compatible pyproject.toml file."
 requires-python = ">=3.7"
 readme = "README.md"
