@@ -1,11 +1,14 @@
 import subprocess
 from dataclasses import dataclass
+from logging import getLogger
 from pathlib import Path
 
 from packaging.utils import canonicalize_name
 
 from poetry_to_uv.constants import POETRY_COMMAND
 from poetry_to_uv.typing import PoetryResolvedDependencies
+
+log = getLogger(__name__)
 
 
 @dataclass
@@ -54,7 +57,12 @@ class PoetryDependencyExporter:
                 continue
 
             if "@" in dependency_version:
-                dependency, version = dependency_version.split("@")
+                try:
+                    dependency, version = dependency_version.split("@", maxsplit=1)
+                    dependency = dependency.strip()
+                    version = version.strip()
+                except ValueError as e:
+                    log.info(f'Could not parse {dependency_version} to uv format')
             elif "==" in dependency_version:
                 dependency, version = dependency_version.split("==")
             else:
