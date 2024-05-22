@@ -148,7 +148,10 @@ class PoetryToUv:
         pyproject_config.add("project", tool_poetry)
 
         # Remove the Poetry formatted dependencies.
-        pyproject_config.get("project").remove("source")
+        try:
+            pyproject_config.get("project").remove("source")
+        except NonExistentKey:
+            pass
         try:
             pyproject_config.get("project").remove("group")
         except NonExistentKey:
