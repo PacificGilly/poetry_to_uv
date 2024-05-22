@@ -185,7 +185,12 @@ class PoetryToUv:
 
         uv_dependencies = tomlkit.array()
         for dependency, version in sorted_main_dependencies.items():
-            uv_dependencies.add_line(f"{dependency} == {version}")
+            if version is None:
+                uv_dependencies.add_line(dependency)
+            elif isinstance(version,str) and version.startswith("git+"):
+                uv_dependencies.add_line(f"{dependency}@{version}")
+            else:
+                uv_dependencies.add_line(f"{dependency} == {version}")
 
         pyproject_config["project"]["dependencies"] = uv_dependencies
 
@@ -212,14 +217,24 @@ class PoetryToUv:
         for dependency_group, dependencies in sorted_group_dependencies.items():
             uv_dependencies = tomlkit.array()
             for dependency, version in dependencies.items():
-                uv_dependencies.add_line(f"{dependency} == {version}")
+                if version is None:
+                    uv_dependencies.add_line(dependency)
+                elif isinstance(version,str) and version.startswith("git+"):
+                    uv_dependencies.add_line(f"{dependency}@{version}")
+                else:
+                    uv_dependencies.add_line(f"{dependency} == {version}")
             all_dependency_groups[dependency_group] = uv_dependencies
 
         # Process the extra dependencies.
         for dependency_group, dependencies in sorted_extra_dependencies.items():
             uv_dependencies = tomlkit.array()
             for dependency, version in dependencies.items():
-                uv_dependencies.add_line(f"{dependency} == {version}")
+                if version is None:
+                    uv_dependencies.add_line(dependency)
+                elif isinstance(version,str) and version.startswith("git+"):
+                    uv_dependencies.add_line(f"{dependency}@{version}")
+                else:
+                    uv_dependencies.add_line(f"{dependency} == {version}")
             all_dependency_groups[dependency_group] = uv_dependencies
 
         pyproject_config["project"]["optional-dependencies"] = tomlkit.item(all_dependency_groups)
