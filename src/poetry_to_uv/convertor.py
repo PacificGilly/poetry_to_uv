@@ -35,7 +35,7 @@ class PoetryToUv:
             tomlkit.dump(config, sys.stdout)
 
     def get_poetry_resolved_dependencies(
-        self, extras: list[str] | None = None, groups: list[str] | None = None
+        self, extras: Optional[list[str]] = None, groups: Optional[list[str]] = None
     ) -> PoetryResolvedDependencies:
         """
         Makes a call to poetry and extras the resolved dependencies for all groups and extras.

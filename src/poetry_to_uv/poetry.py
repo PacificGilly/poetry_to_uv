@@ -1,6 +1,7 @@
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 from packaging.utils import canonicalize_name
 
@@ -15,8 +16,8 @@ class PoetryDependencyExporter:
     """
 
     path: Path
-    extras: list[str] | None = None
-    groups: list[str] | None = None
+    extras: Optional[list[str]] = None
+    groups: Optional[list[str]] = None
 
     def _build_command(self) -> str:
         extras_command = ""

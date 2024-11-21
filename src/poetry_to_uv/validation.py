@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from packaging.utils import NormalizedName, canonicalize_name
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -8,8 +8,8 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 class PoetryConfig:
     description: str
     dependencies: dict[str, Any]
-    group: dict[str, Any] | None = None
-    extras: dict[str, Any] | None = None
+    group: Optional[dict[str, Any]] = None
+    extras: Optional[dict[str, Any]] = None
 
     @property
     def get_dependencies(self) -> dict[NormalizedName, str]:
